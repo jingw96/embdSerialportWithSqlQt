@@ -33,8 +33,7 @@ private:
 
     /* 串口对象 */
     QSerialPort *serialPort;
-    QByteArray m_recvBuf;
-
+    
     /* 扫描系统可用串口 */
     void scanSerialPort();
 
