@@ -13,7 +13,7 @@ Copyright © Deng Zhimao Co., Ltd. 1990-2021. All rights reserved.
 #include <QGuiApplication>
 #include <QScreen>
 
-#define SERIALPORT_QT_VERSION "1.0.0"
+#define SERIALPORT_QT_VERSION "1.0.1"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
