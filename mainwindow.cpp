@@ -129,69 +129,108 @@ void MainWindow::openSerialPortPushButtonClicked()
     if (ui->pushButton_1->text() == "Open") {
         /* 设置串口名 */
         serialPort->setPortName(ui->comboBox_0->currentText());
-        /* 设置波特率 */
-        serialPort->setBaudRate(ui->comboBox_1->currentText().toInt());
-        /* 设置数据位数 */
+        if (!serialPort->open(QIODevice::ReadWrite)) {
+            QMessageBox::warning(this, "错误",
+                                 "串口无法打开！\n"
+                                 "可能原因：被占用、权限不足或设备异常。\n\n"
+                                 "详细错误：" + serialPort->errorString());
+            return;
+        }
+
+        int baudRate = ui->comboBox_1->currentText().toInt();
+        if (!serialPort->setBaudRate(baudRate, QSerialPort::AllDirections)) {
+            QMessageBox::warning(this, "错误",
+                                 QString("设置波特率 %1 失败。\n详细错误：%2")
+                                 .arg(baudRate)
+                                 .arg(serialPort->errorString()));
+            serialPort->close();
+            return;
+        }
+
+        QSerialPort::DataBits dataBits = QSerialPort::Data8;
         switch (ui->comboBox_2->currentText().toInt()) {
         case 5:
-            serialPort->setDataBits(QSerialPort::Data5);
+            dataBits = QSerialPort::Data5;
             break;
         case 6:
-            serialPort->setDataBits(QSerialPort::Data6);
+            dataBits = QSerialPort::Data6;
             break;
         case 7:
-            serialPort->setDataBits(QSerialPort::Data7);
+            dataBits = QSerialPort::Data7;
             break;
         case 8:
-            serialPort->setDataBits(QSerialPort::Data8);
+        default:
+            dataBits = QSerialPort::Data8;
             break;
-        default: break;
         }
-        /* 设置奇偶校验 */
+        if (!serialPort->setDataBits(dataBits)) {
+            QMessageBox::warning(this, "错误",
+                                 "设置数据位失败。\n详细错误：" + serialPort->errorString());
+            serialPort->close();
+            return;
+        }
+
+        QSerialPort::Parity parity = QSerialPort::NoParity;
         switch (ui->comboBox_3->currentIndex()) {
         case 0:
-            serialPort->setParity(QSerialPort::NoParity);
+            parity = QSerialPort::NoParity;
             break;
         case 1:
-            serialPort->setParity(QSerialPort::EvenParity);
+            parity = QSerialPort::EvenParity;
             break;
         case 2:
-            serialPort->setParity(QSerialPort::OddParity);
+            parity = QSerialPort::OddParity;
             break;
         case 3:
-            serialPort->setParity(QSerialPort::SpaceParity);
+            parity = QSerialPort::SpaceParity;
             break;
         case 4:
-            serialPort->setParity(QSerialPort::MarkParity);
+            parity = QSerialPort::MarkParity;
             break;
-        default: break;
+        default:
+            parity = QSerialPort::NoParity;
+            break;
         }
-        /* 设置停止位 */
+        if (!serialPort->setParity(parity)) {
+            QMessageBox::warning(this, "错误",
+                                 "设置校验位失败。\n详细错误：" + serialPort->errorString());
+            serialPort->close();
+            return;
+        }
+
+        QSerialPort::StopBits stopBits = QSerialPort::OneStop;
         switch (ui->comboBox_4->currentText().toInt()) {
         case 1:
-            serialPort->setStopBits(QSerialPort::OneStop);
+            stopBits = QSerialPort::OneStop;
             break;
         case 2:
-            serialPort->setStopBits(QSerialPort::TwoStop);
+            stopBits = QSerialPort::TwoStop;
             break;
-        default: break;
+        default:
+            stopBits = QSerialPort::OneStop;
+            break;
         }
-        /* 设置流控制 */
-        serialPort->setFlowControl(QSerialPort::NoFlowControl);
-        if (!serialPort->open(QIODevice::ReadWrite)){
-            perror("open failed");
-            QMessageBox::about(NULL, "错误",
-                               "串口无法打开！可能串口已经被占用！");
+        if (!serialPort->setStopBits(stopBits)) {
+            QMessageBox::warning(this, "错误",
+                                 "设置停止位失败。\n详细错误：" + serialPort->errorString());
+            serialPort->close();
+            return;
+        }
 
-        } else {
-            ui->comboBox_0->setEnabled(false);
-            ui->comboBox_1->setEnabled(false);
-            ui->comboBox_2->setEnabled(false);
-            ui->comboBox_3->setEnabled(false);
-            ui->comboBox_4->setEnabled(false);
-            ui->pushButton_1->setText("Close");
-            ui->pushButton_0->setEnabled(true);
+        if (!serialPort->setFlowControl(QSerialPort::NoFlowControl)) {
+            QMessageBox::warning(this, "错误",
+                                 "设置流控制失败。\n详细错误：" + serialPort->errorString());
+            serialPort->close();
+            return;
         }
+
+        ui->comboBox_0->setEnabled(false);
+        ui->comboBox_1->setEnabled(false);
+        ui->comboBox_2->setEnabled(false);
+        ui->comboBox_3->setEnabled(false);
+        ui->comboBox_4->setEnabled(false);
+        ui->pushButton_1->setText("Close");
+        ui->pushButton_0->setEnabled(true);
     } else {
         serialPort->close();
         ui->comboBox_0->setEnabled(true);
