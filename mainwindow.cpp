@@ -119,7 +119,7 @@ void MainWindow::sendPushButtonClicked()
 {
     /* 获取textEdit数据,转换成utf8格式的字节流 */
     QByteArray data = ui->textEdit->toPlainText().toUtf8();
-    data.append("\r\n");
+    // data.append("\r\n");
     serialPort->write(data);
     //ui->textBrowser->insertPlainText(QString::fromUtf8(data));
 }
