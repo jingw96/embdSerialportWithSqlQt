@@ -119,7 +119,7 @@ void MainWindow::sendPushButtonClicked()
 {
     /* 获取textEdit数据,转换成utf8格式的字节流 */
     QByteArray data = ui->textEdit->toPlainText().toUtf8();
-    // data.append("\r\n");
+    data.append("\r\n");
     serialPort->write(data);
     //ui->textBrowser->insertPlainText(QString::fromUtf8(data));
 }
@@ -208,7 +208,19 @@ void MainWindow::serialPortReadyRead()
 {
     /* 接收缓冲区中读取数据 */
     QByteArray buf = serialPort->readAll();
-    ui->textBrowser->insertPlainText(QString(buf));
+    //ui->textBrowser->insertPlainText(QString(buf));
+    m_recvBuf.append(buf);
+   // qDebug() << "serialPortReadyRead(): Received: " << QString::fromUtf8(buf);
+
+    while (m_recvBuf.contains("\r\n")) {
+        int index = m_recvBuf.indexOf("\r\n");
+        QByteArray frameReceived = m_recvBuf.left(index);
+        QString strFrameReceived = QString::fromUtf8(frameReceived);
+        m_recvBuf.remove(0, index + 2);
+        ui->textBrowser->insertPlainText(strFrameReceived);
+        qDebug() << "Received: " << strFrameReceived;
+    }
+    serialPort->flush();
 }
 
 MainWindow::~MainWindow()
