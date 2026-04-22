@@ -121,7 +121,6 @@ void MainWindow::sendPushButtonClicked()
     QByteArray data = ui->textEdit->toPlainText().toUtf8();
     data.append("\r\n");
     serialPort->write(data);
-    //ui->textBrowser->insertPlainText(QString::fromUtf8(data));
 }
 
 void MainWindow::openSerialPortPushButtonClicked()
