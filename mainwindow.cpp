@@ -13,14 +13,14 @@ Copyright © Deng Zhimao Co., Ltd. 1990-2021. All rights reserved.
 #include <QGuiApplication>
 #include <QScreen>
 
-#define SERIALPORT_QT_VERSION "1.0.2"
+#define SERIALPORT_QT_VERSION "1.0.3"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    QDebug() << "Serialport_qt: " << SERIALPORT_QT_VERSION;
+    qDebug() << "Serialport_qt: " << SERIALPORT_QT_VERSION;
 
     /* 如果是ARM平台，直接设置大小为屏幕的大小 */
 #if __arm__
