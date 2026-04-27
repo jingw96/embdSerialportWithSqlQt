@@ -9,11 +9,8 @@ Copyright © Deng Zhimao Co., Ltd. 1990-2021. All rights reserved.
 *******************************************************************/
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include <QDebug>
-#include <QGuiApplication>
-#include <QScreen>
 
-#define SERIALPORT_QT_VERSION "1.0.3"
+#define SERIALPORT_QT_VERSION "1.0.4"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
