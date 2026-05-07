@@ -10,14 +10,14 @@ Copyright © Deng Zhimao Co., Ltd. 1990-2021. All rights reserved.
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#define SERIALPORT_QT_VERSION "1.0.4"
+#define SERIALPORT_QT_VERSION "1.0.5"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    qDebug() << "Serialport_qt: " << SERIALPORT_QT_VERSION;
+    qDebug() << "Serialport with Sql: " << SERIALPORT_QT_VERSION;
 
     /* 如果是ARM平台，直接设置大小为屏幕的大小 */
 #if __arm__
